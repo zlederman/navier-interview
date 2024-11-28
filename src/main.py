@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 from src.download.airfrans import download_airfrans_data
+from src.extract.extract import extract_airfrans
+
 
 def load_env():
     env_file = Path(".env")
@@ -30,3 +32,5 @@ def download():
 if __name__ == "__main__":
     load_env()
     download()
+    extract_airfrans()
+    
