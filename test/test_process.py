@@ -38,7 +38,7 @@ def test_stats_single_file():
 def test_stats_two_files():
     stats = DatasetStatistics(2)
     dataset = extract_from_vtk("test/data/sample/sample_internal.vtu")
-    dataset_2 = extract_from_vtk("test/data/sample/sample2_internal.vtu")
+    dataset_2 = extract_from_vtk("test/data/sample2/sample2_internal.vtu")
 
     # tell stats obj to consume dataset
     stats.consume_dataset(dataset)

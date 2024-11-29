@@ -58,6 +58,7 @@ Here are some images of paraview
 ## Next Steps
 - Implementing a less naive way to calculate a running mean and running standard deviation
 - Implement a torch dataloader
+    - implementing a 80/20 split for training and evaluation data
 - Improve testing
 - Get feedback on cli usability
 - Externalize file path parameters into a .env file
