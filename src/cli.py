@@ -30,10 +30,10 @@ if __name__ == "__main__":
     spinner.text = f"downloading raw dataset to {ZIP_PATH}"
     spinner.start()
     #downloads zip file to target path, includes spinner for progress
-    # download_zip(ZIP_PATH, spinner)
+    download_zip(ZIP_PATH, spinner)
     spinner.text = f"extracting zip files to {UNZIP_PATH}"
     # extracting zip into target folder
-    #extract_zip(ZIP_PATH, UNZIP_PATH, spinner, cleanup=False)
+    extract_zip(ZIP_PATH, UNZIP_PATH, spinner, cleanup=False)
     spinner.text = f"processing dataset and saving to {EXTRACTED_DATA_PATH}"
     stats = process_airfrans(UNZIP_PATH / "Dataset", EXTRACTED_DATA_PATH)
     spinner.stop()

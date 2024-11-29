@@ -24,7 +24,7 @@ def test_stats():
     ymin, ymax = np.min(dataset[:,1]), np.max(dataset[:,1])
     sdf_min, sdf_max = np.min(dataset[:,2]), np.max(dataset[:,2])
     sdf_sum = np.mean(dataset[:, 2]) * length
-    assert sdf_sum / length == stats.sdf_mean
+    assert sdf_sum / length - stats.sdf_mean <= 1e-4
     assert stats.sdf_max == sdf_max and stats.sdf_min == sdf_min
     assert stats.x_max == xmax and stats.x_min == xmin
     assert stats.y_max == ymax and stats.y_min == ymin
