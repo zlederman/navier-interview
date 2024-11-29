@@ -5,39 +5,33 @@ import requests
 from halo import Halo
 import os
 
-def extract_zip(zip_path: Path, unzip_path: Path, spinner: Halo, cleanup: bool = False): 
+def extract_zip(zip_path: Path, unzip_path: Path, spinner: Halo, cleanup: bool = False) -> Path: 
     '''
     zip_path: path to the zipped dataset
     unzip_path: path to directory in which to place unzipped files
-
-    side effects:
-        - deletes the zip file because its large
+    cleanup: bool = False to remove the zip file bc its huge
+    returns:
+        - the sub directory of the extracted data
     '''
     files_extracted = 0
     percent = 0.0
     base_str = spinner.text
 
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-        total_files = len(zip_ref.filelist) - 1 # -1 because we dont want to include parent dir creation
-
-        for file in zip_ref.namelist():
-            if not os.path.basename(file):
-                continue
-
-            archive_path = Path(file)
-            filepath = archive_path.parent / os.path.basename(file)
-            source = zip_ref.extract(str(archive_path), unzip_path)
-            dest = unzip_path / filepath
-            print(dest)
-            os.rename(source, dest)
-
+        total_files = len(zip_ref.filelist)
+        for file in zip_ref.filelist:
+            
+            location = zip_ref.extract(file, unzip_path)
+            # fs operations to ensure zip gets extracted to correct directory
             files_extracted += 1
             percent = (files_extracted / total_files) * 100
             spinner.text = base_str + f" {percent:.1f}" + "%"
 
     if cleanup:
         os.remove(zip_path)
-                
+
+    return unzip_path / "Dataset"   
+       
 def download_zip(zip_path: Path, spinner: Halo):
     '''
         zip_path: path to the zip file in which to download into

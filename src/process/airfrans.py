@@ -1,37 +1,61 @@
 from pathlib import Path
 import os
-from src.process.vtk_xml import extract_from_vtk, extract_num_points_from_xml
+from src.process.stats import DatasetStatistics
+from src.process.vtk_xml import extract_from_vtk, extract_num_points_from_file
 from typing import List
 import h5py
-from xml.etree.ElementTree import ElementTree as Et
-from halo import Halo
 
 
-def extract_and_save(output: Path, total_points: int, filepaths: List[Path]):
+
+def extract_and_save(output: Path, total_points: int, filepaths: List[Path], stats: DatasetStatistics):
+    '''
+        creates an h5 py file, but loads files one at a time as to avoid consuming too memory
+        also tracks running statistics
+    '''
     with h5py.File(output, "w") as f:
-        first_array = extract_from_vtk(filepaths[0])
+        dataset = extract_from_vtk(filepaths[0])
+        stats.consume_dataset(dataset)
+        length, width = dataset.shape
         f.create_dataset("data", 
-            shape=(total_points, * first_array.shape[1::]),
-            dtype=first_array.dtype,
-            chunks=True) 
-        f["data"][0] = first_array
+                shape=(total_points, width),
+                dtype=dataset.dtype,
+                chunks=True) 
+        
+        f["data"][: length] = dataset
+        cnt = length
+        for i in range(1, len(filepaths)):
+            try:
+                dataset = extract_from_vtk(filepaths[i])
+                stats.consume_dataset(dataset)
 
-        for i, vtk_file in enumerate(filepaths, start = 1):
-            array = extract_from_vtk(vtk_file)
-            f["data"][i] = array 
+                length, _ = dataset.shape
+                f["data"][cnt: length + cnt] = dataset
+                cnt += length 
+            except:
+                print(f"unable to extract vtk data from: {filepaths[i]}")
 
-@Halo(text="processing raw dataset...")
-def process_airfrans(input_dir: Path, output: Path):
+
+
+def process_airfrans(input_dir: Path, output: Path) -> DatasetStatistics:
+    
     total_points = 0
     filepaths: List[Path] = []
-    parser = Et()
+
     for subfolder in os.listdir(input_dir):
         filename = subfolder + "_internal.vtu"
         filepath = input_dir / subfolder / filename
-
-        total_points += extract_num_points_from_xml(filepath, parser)
-        filepaths.append(filepath)
+        if filepath.exists():
+            points = extract_num_points_from_file(filepath)
+            if points == 0:
+                # skip files where we cant find the correct number of points
+                continue
+            total_points += points
     
-    extract_and_save(output, total_points, filepaths)
+            filepaths.append(filepath)
+            
+    stats = DatasetStatistics(len(filepaths))
+    extract_and_save(output, total_points, filepaths, stats)
+
+    return stats
 
     
