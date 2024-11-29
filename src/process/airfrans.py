@@ -7,22 +7,23 @@ import h5py
 from tqdm import tqdm
 
 
-def extract_and_save(output: Path, total_points: int, filepaths: List[Path], stats: DatasetStatistics):
-    '''        
+def extract_and_save(
+    output: Path, total_points: int, filepaths: List[Path], stats: DatasetStatistics
+):
+    """
     creates an h5 py file, but loads files one at a time as to avoid consuming too memory
         also tracks running statistics
-    '''
+    """
     print("* extracting to h5d file")
     with h5py.File(output, "w") as f:
         dataset = extract_from_vtk(filepaths[0])
         stats.consume_dataset(dataset)
         length, width = dataset.shape
-        f.create_dataset("data", 
-                shape=(total_points, width),
-                dtype=dataset.dtype,
-                chunks=True) 
-        
-        f["data"][: length] = dataset
+        f.create_dataset(
+            "data", shape=(total_points, width), dtype=dataset.dtype, chunks=True
+        )
+
+        f["data"][:length] = dataset
         cnt = length
         for i in tqdm(range(1, len(filepaths))):
             try:
@@ -30,15 +31,14 @@ def extract_and_save(output: Path, total_points: int, filepaths: List[Path], sta
                 stats.consume_dataset(dataset)
 
                 length, _ = dataset.shape
-                f["data"][cnt: length + cnt] = dataset
-                cnt += length 
+                f["data"][cnt : length + cnt] = dataset
+                cnt += length
             except:
                 print(f"unable to extract vtk data from: {filepaths[i]}")
 
 
-
 def process_airfrans(input_dir: Path, output: Path) -> DatasetStatistics:
-    
+
     total_points = 0
     filepaths: List[Path] = []
 
@@ -51,12 +51,10 @@ def process_airfrans(input_dir: Path, output: Path) -> DatasetStatistics:
                 # skip files where we cant find the correct number of points
                 continue
             total_points += points
-    
+
             filepaths.append(filepath)
-            
+
     stats = DatasetStatistics(len(filepaths))
     extract_and_save(output, total_points, filepaths, stats)
 
     return stats
-
-    

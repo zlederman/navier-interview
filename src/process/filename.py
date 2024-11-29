@@ -6,6 +6,7 @@ from dataclasses import dataclass
 NACA_4 = Tuple[float, float, float]
 NACA_5 = Tuple[float, float, float, float]
 
+
 @dataclass
 class Metadata:
     inlet_velocity: float
@@ -20,20 +21,11 @@ def parse_filename(filename: str):
 
     inlet_velocity = float(splits[2])
     attack_angle = float(splits[3])
-    # handle naca 
+    # handle naca
     NACA_IDX, naca_temp = 4, []
     naca_series = 5 if len(splits[NACA_IDX::]) == 4 else 4
     for i in range(naca_series - 1):
         naca_temp.append(float(splits[NACA_IDX + i]))
     naca_code = tuple(naca_temp)
 
-    return Metadata(
-        inlet_velocity,
-        attack_angle,
-        naca_series,
-        naca_code,
-        filename
-    )
-
-
-
+    return Metadata(inlet_velocity, attack_angle, naca_series, naca_code, filename)

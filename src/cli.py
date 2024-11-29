@@ -13,9 +13,9 @@ EXTRACTED_DATA_PATH = BASE_PATH / "extracted" / "naca_position_sdf_velocity.h5"
 
 
 def setup(paths: List[Path]):
-    '''
-        sets up working directories
-    '''
+    """
+    sets up working directories
+    """
     for path in paths:
         if path.suffix:
             path.parent.mkdir(parents=True, exist_ok=True)
@@ -28,12 +28,11 @@ if __name__ == "__main__":
     print("* setting up your directories")
     setup([EXTRACTED_DATA_PATH, ZIP_PATH, UNZIP_PATH])
     print(f"* downloading raw dataset to {ZIP_PATH}")
-    #downloads zip file to target path
+    # downloads zip file to target path
     download_zip(ZIP_PATH)
     print(f"* extracting zip files to {UNZIP_PATH}:")
-    #extracting zip into target folder
+    # extracting zip into target folder
     extract_zip(ZIP_PATH, UNZIP_PATH, cleanup=False)
     print(f"* processing dataset and saving to {EXTRACTED_DATA_PATH}")
     stats = process_airfrans(UNZIP_PATH / "Dataset", EXTRACTED_DATA_PATH)
     print(stats)
-    
