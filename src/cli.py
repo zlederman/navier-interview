@@ -24,18 +24,16 @@ def setup(paths: List[Path]):
 
 
 if __name__ == "__main__":
-    spinner = Halo(text='setting up...', spinner='dots')
     # sets up working directories to place data
+    print("* setting up your directories")
     setup([EXTRACTED_DATA_PATH, ZIP_PATH, UNZIP_PATH])
-    spinner.text = f"downloading raw dataset to {ZIP_PATH}"
-    spinner.start()
-    #downloads zip file to target path, includes spinner for progress
-    download_zip(ZIP_PATH, spinner)
-    spinner.text = f"extracting zip files to {UNZIP_PATH}"
-    # extracting zip into target folder
-    extract_zip(ZIP_PATH, UNZIP_PATH, spinner, cleanup=False)
-    spinner.text = f"processing dataset and saving to {EXTRACTED_DATA_PATH}"
+    print(f"* downloading raw dataset to {ZIP_PATH}")
+    #downloads zip file to target path
+    download_zip(ZIP_PATH)
+    print(f"* extracting zip files to {UNZIP_PATH}:")
+    #extracting zip into target folder
+    extract_zip(ZIP_PATH, UNZIP_PATH, cleanup=False)
+    print(f"* processing dataset and saving to {EXTRACTED_DATA_PATH}")
     stats = process_airfrans(UNZIP_PATH / "Dataset", EXTRACTED_DATA_PATH)
-    spinner.stop()
     print(stats)
     

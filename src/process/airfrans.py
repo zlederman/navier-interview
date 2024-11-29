@@ -4,14 +4,15 @@ from src.process.stats import DatasetStatistics
 from src.process.vtk_xml import extract_from_vtk, extract_num_points_from_file
 from typing import List
 import h5py
-
+from tqdm import tqdm
 
 
 def extract_and_save(output: Path, total_points: int, filepaths: List[Path], stats: DatasetStatistics):
-    '''
-        creates an h5 py file, but loads files one at a time as to avoid consuming too memory
+    '''        
+    creates an h5 py file, but loads files one at a time as to avoid consuming too memory
         also tracks running statistics
     '''
+    print("* extracting to h5d file")
     with h5py.File(output, "w") as f:
         dataset = extract_from_vtk(filepaths[0])
         stats.consume_dataset(dataset)
@@ -23,7 +24,7 @@ def extract_and_save(output: Path, total_points: int, filepaths: List[Path], sta
         
         f["data"][: length] = dataset
         cnt = length
-        for i in range(1, len(filepaths)):
+        for i in tqdm(range(1, len(filepaths))):
             try:
                 dataset = extract_from_vtk(filepaths[i])
                 stats.consume_dataset(dataset)

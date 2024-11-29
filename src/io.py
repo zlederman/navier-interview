@@ -4,8 +4,9 @@ import zipfile
 import requests
 from halo import Halo
 import os
+from tqdm import tqdm
 
-def extract_zip(zip_path: Path, unzip_path: Path, spinner: Halo, cleanup: bool = False) -> Path: 
+def extract_zip(zip_path: Path, unzip_path: Path, cleanup: bool = False) -> Path: 
     '''
     zip_path: path to the zipped dataset
     unzip_path: path to directory in which to place unzipped files
@@ -13,26 +14,15 @@ def extract_zip(zip_path: Path, unzip_path: Path, spinner: Halo, cleanup: bool =
     returns:
         - the sub directory of the extracted data
     '''
-    files_extracted = 0
-    percent = 0.0
-    base_str = spinner.text
-
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-        total_files = len(zip_ref.filelist)
-        for file in zip_ref.filelist:
-            
-            location = zip_ref.extract(file, unzip_path)
-            # fs operations to ensure zip gets extracted to correct directory
-            files_extracted += 1
-            percent = (files_extracted / total_files) * 100
-            spinner.text = base_str + f" {percent:.1f}" + "%"
-
+        for file in tqdm(zip_ref.filelist):
+            zip_ref.extract(file, unzip_path)
     if cleanup:
         os.remove(zip_path)
 
     return unzip_path / "Dataset"   
        
-def download_zip(zip_path: Path, spinner: Halo):
+def download_zip(zip_path: Path):
     '''
         zip_path: path to the zip file in which to download into
         spinner: for visualization
@@ -43,17 +33,13 @@ def download_zip(zip_path: Path, spinner: Halo):
 
     unit = pow(2, 20)
     total_mib = int(res.headers.get("content-length", 0)) / unit
+    pbar = tqdm(total=total_mib, unit='MiB')
     chunk_size = 8192
-    downloaded_mib = 0
 
-    base_str = spinner.text
     with open(zip_path, 'wb') as fp:
         for chunk in res.iter_content(chunk_size=8192):
-            
             fp.write(chunk) 
-            downloaded_mib += chunk_size / unit
-            percentage = (downloaded_mib / total_mib) * 100
-            spinner.text = base_str + f" {percentage:.1f}" + "%"
+            pbar.update(chunk_size / unit)
             
 
     
