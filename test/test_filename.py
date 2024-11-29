@@ -1,4 +1,4 @@
-from src.extract.filename import parse_filename
+from src.process.filename import parse_filename
 
 def test_parse_filenames_basic():
     filename = "airFoil2D_SST_31_13_3_3_6"

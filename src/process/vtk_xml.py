@@ -1,7 +1,6 @@
 from pathlib import Path
 import pyvista as pv
 from xml.etree.ElementTree import ElementTree as ET
-from typing import List, Dict, Tuple
 from numpy.typing import NDArray
 import numpy as np
 
@@ -16,6 +15,7 @@ def extract_from_vtk(filename: Path) -> NDArray:
 
     # extract the relevant point data and add it to the array 
     dataset[:, 0:2] = grid.points[:, 0: 2]
+    # extract the sdf 
     if "implicit_distance" in grid.point_data:
         sdf_data = grid.point_data["implicit_distance"]
         dataset[:, 2] = sdf_data

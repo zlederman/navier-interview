@@ -1,5 +1,5 @@
 
-from src.extract.vtk_xml import extract_from_vtk, extract_num_points_from_xml
+from src.process.p import extract_from_vtk, extract_num_points_from_xml
 from xml.etree.ElementTree import ElementTree as Et
 
 def test_xml_parser():
