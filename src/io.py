@@ -1,7 +1,6 @@
 from pathlib import Path
 import zipfile
 import requests
-from halo import Halo
 import os
 from tqdm import tqdm
 

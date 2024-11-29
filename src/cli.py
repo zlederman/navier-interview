@@ -1,4 +1,3 @@
-from halo import Halo
 from typing import List
 from pathlib import Path
 
