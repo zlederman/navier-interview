@@ -1,8 +1,7 @@
-from typing import List
 from pathlib import Path
 
 
-from src.io import download_zip, extract_zip
+from src.pipeline.run import download_zip, extract_zip, setup
 from src.process.airfrans import process_airfrans
 
 BASE_PATH = Path("data")
@@ -11,15 +10,6 @@ UNZIP_PATH = BASE_PATH / "naca_raw"
 EXTRACTED_DATA_PATH = BASE_PATH / "extracted" / "naca_position_sdf_velocity.h5"
 
 
-def setup(paths: List[Path]):
-    """
-    sets up working directories
-    """
-    for path in paths:
-        if path.suffix:
-            path.parent.mkdir(parents=True, exist_ok=True)
-        else:
-            path.mkdir(parents=True, exist_ok=True)
 
 
 if __name__ == "__main__":
