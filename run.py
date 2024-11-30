@@ -1,10 +1,26 @@
 import os
 from flask import Flask
+from src.cli import run_cli
 from src.routes import trigger
 import logging
+import argparse
 
 logging.basicConfig(level=logging.INFO)
 
+def create_parser():
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(dest='command', required=True)
+    
+    server_parser = subparsers.add_parser('serve', help='Start the server')
+    server_parser.add_argument('--port', type=int, default=8000)
+    
+
+    cli_parser = subparsers.add_parser('cli', help='Configure settings')
+    cli_parser.add_argument('--extracted-data-path', type=str, required=True)
+    cli_parser.add_argument('--unzip-path', type=str, required=True)
+    cli_parser.add_argument('--zip-path', type=str, required=True)
+    
+    return parser
 
 def create_app():
     app = Flask(__name__)
@@ -13,6 +29,12 @@ def create_app():
     return app
 
 if __name__ == "__main__":
-    app = create_app()
-    port = int(os.getenv("PORT", 8080))
-    app.run(host="0.0.0.0", port=port)
+    parser = create_parser()
+    args = parser.parse_args()
+
+    if args.command == "serve":
+        app = create_app()
+        port = int(os.getenv("PORT", 8080))
+        app.run(host="0.0.0.0", port=port)
+    elif args.command == "cli":
+        run_cli(args)

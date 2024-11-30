@@ -1,5 +1,4 @@
 import logging
-from typing import List
 from pathlib import Path
 import zipfile
 import requests
@@ -52,14 +51,14 @@ def download_zip(zip_path: Path):
 
 def run_pipeline(config: ConfigModel):
     # sets up working directories to place data
-    logging.info("* setting up your directories")
+    logging.info("setting up your directories")
     config.build_paths()
-    logging.info(f"* downloading raw dataset to {config.zip_path}")
+    logging.info(f"downloading raw dataset to {config.zip_path}")
     # downloads zip file to target path
     download_zip(config.zip_path)
-    logging.info(f"* extracting zip files to {config.unzip_path}:")
+    logging.info(f"extracting zip files to {config.unzip_path}:")
     # extracting zip into target folder
     extract_zip(config.zip_path, config.unzip_path, cleanup=False)
-    logging.info(f"* processing dataset and saving to {config.extracted_data_path}")
+    logging.info(f"processing dataset and saving to {config.extracted_data_path}")
     stats = process_airfrans(config.unzip_path / "Dataset", config.extracted_data_path)
     print(stats)
