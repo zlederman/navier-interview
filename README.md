@@ -4,9 +4,21 @@
 1. Install Dependencies
     `pip3 -r requirements.txt`
 2. Run Script
-    `python3 -m src.cli`
+    ```
+    python3 run.py cli \                               
+        --extracted-data-path=data/extracted/naca_position_sdf_velocity.h5 \
+        --unzip-path=data/naca_raw \
+        --zip-path=data/zip/naca_raw.zip
+    ```
 3. Run Tests
     `pytest test`
+
+4. Run Server
+    ```
+    python3 run.py serve \
+        --host=0.0.0.0
+        --port=8080
+    ```
 
 ## My Approach
 - Initial Research

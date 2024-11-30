@@ -13,6 +13,7 @@ def create_parser():
     
     server_parser = subparsers.add_parser('serve', help='Start the server')
     server_parser.add_argument('--port', type=int, default=8000)
+    server_parser.add_argument('--host', type=str, default='0.0.0.0')
     
 
     cli_parser = subparsers.add_parser('cli', help='Configure settings')
@@ -34,7 +35,6 @@ if __name__ == "__main__":
 
     if args.command == "serve":
         app = create_app()
-        port = int(os.getenv("PORT", 8080))
-        app.run(host="0.0.0.0", port=port)
+        app.run(host=args.host, port=args.port)
     elif args.command == "cli":
         run_cli(args)
