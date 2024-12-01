@@ -12,6 +12,7 @@ class PipelineStates(Enum):
     UNZIPPING_FILES = "UNZIPPING_FILES"
     PROCESSING_FILES = "PROCESSING_FILES"
     JOB_COMPLETE = "JOB_COMPLETE"
+    CANCELLED = "CANCELLED"
 
     
 class ConfigModel(BaseModel):

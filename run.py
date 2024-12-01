@@ -4,6 +4,7 @@ import logging
 import argparse
 import uvicorn
 from tqdm import tqdm
+
 logging.basicConfig(level=logging.INFO)
 
 def create_parser():
