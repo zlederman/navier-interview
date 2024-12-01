@@ -28,7 +28,7 @@ async def check_if_task_valid(task_id: str):
 async def trigger_pipeline(config: ConfigModel):
     # create new task and start pipeline
     task_id = str(uuid.uuid4())
-    active_tasks[task_id] = asyncio.create_task(run_pipeline(config, task_id, states, thread_pool))
+    active_tasks[task_id] = asyncio.create_task(run_pipeline(config, task_id, states, active_tasks, thread_pool))
 
     return TaskResponse(task_id=task_id)
 
@@ -52,7 +52,7 @@ async def stop_pipeline(task_id: str = Depends(check_if_task_valid)):
     del states[task_id]
     del active_tasks[task_id]
 
-    return TaskStatusResponse(task_id, status=PipelineStates.CANCELLED)
+    return TaskStatusResponse(task_id=task_id,status=PipelineStates.CANCELLED)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

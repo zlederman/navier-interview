@@ -4,7 +4,7 @@ on:
         branches: [main, feature/http-server-infra]
 
 env:
-  ACR_REGISTRY: navierinterviewacr.azurecr.io
+  ACR_REGISTRY: myregistrya85882de.azurecr.io
   IMAGE_NAME: naca-airfoil-pipeline
   IMAGE_TAG: ${{ github.sha }}
 
