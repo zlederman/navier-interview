@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
-from src.process.stats import DatasetStatistics
-from src.process.vtk_xml import extract_from_vtk, extract_num_points_from_file
+from src.pipeline.process.stats import DatasetStatistics
+from src.pipeline.process.vtk_xml import extract_from_vtk, extract_num_points_from_file
 from typing import List
 import h5py
 from tqdm import tqdm

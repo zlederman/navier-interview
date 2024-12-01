@@ -9,7 +9,7 @@ from tqdm import tqdm
 import concurrent.futures as cf
 
 from src.models import ConfigModel, PipelineStates
-from src.process.airfrans import process_airfrans
+from src.pipeline.process.airfrans import process_airfrans
 
 
 def extract_zip(zip_path: Path, unzip_path: Path, cleanup: bool = False) -> Path:
@@ -74,9 +74,9 @@ def run_pipeline_sync(config: ConfigModel, task_id: str, states: dict):
 
 
 async def run_pipeline(config: ConfigModel, task_id: str, states: dict, thread_pool: cf.ThreadPoolExecutor):
-    """Async wrapper for running the pipeline in a thread pool"""
+    '''async wrapper for running the pipeline in a thread pool'''
     try:
-        # Run the synchronous pipeline in a thread pool
+        # run the synchronous pipeline in a thread pool
         loop = asyncio.get_running_loop()
         await loop.run_in_executor(
             thread_pool, 
