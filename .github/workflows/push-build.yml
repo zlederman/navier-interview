@@ -4,7 +4,7 @@ on:
         branches: [main, feature/http-server-infra]
 
 env:
-  ACR_REGISTRY: myregistrya85882de.azurecr.io
+  ACR_REGISTRY: myregistrye36f2c4c.azurecr.io
   IMAGE_NAME: naca-airfoil-pipeline
   IMAGE_TAG: latest
 

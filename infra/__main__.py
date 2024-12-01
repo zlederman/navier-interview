@@ -4,7 +4,7 @@ from pulumi_azure_native import authorization
 
 from components.registry import acr, acr_cred, sp_password, app
 from components.storage import storage_key
-from components.container import container_instance
+# from components.container import container_instance
 #live azure client
 current = authorization.get_client_config()
 
@@ -31,4 +31,4 @@ pulumi.export("primary_storage_key", pulumi.Output.secret(storage_key))
 pulumi.export("registry_login_server", acr.login_server)
 pulumi.export("registry_username", acr_cred.apply(lambda creds: creds.username))
 pulumi.export("registry_password", pulumi.Output.secret(acr_cred.apply(lambda creds: creds.passwords[0].value)))
-pulumi.export("container_ip", container_instance.ip_address.apply(lambda ip: ip.ip))
+# pulumi.export("container_ip", container_instance.ip_address.apply(lambda ip: ip.ip))
