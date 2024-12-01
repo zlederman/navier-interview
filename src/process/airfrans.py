@@ -14,7 +14,6 @@ def extract_and_save(
     creates an h5 py file, but loads files one at a time as to avoid consuming too memory
         also tracks running statistics
     """
-    print("* extracting to h5d file")
     with h5py.File(output, "w") as f:
         dataset = extract_from_vtk(filepaths[0])
         stats.consume_dataset(dataset)
@@ -22,7 +21,6 @@ def extract_and_save(
         f.create_dataset(
             "data", shape=(total_points, width), dtype=dataset.dtype, chunks=True
         )
-
         f["data"][:length] = dataset
         cnt = length
         for i in tqdm(range(1, len(filepaths))):

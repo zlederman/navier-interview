@@ -1,10 +1,9 @@
-import os
-from flask import Flask
 from src.cli import run_cli
-from src.routes import trigger
+from src.server import create_app
 import logging
 import argparse
-
+import uvicorn
+from tqdm import tqdm
 logging.basicConfig(level=logging.INFO)
 
 def create_parser():
@@ -23,18 +22,15 @@ def create_parser():
     
     return parser
 
-def create_app():
-    app = Flask(__name__)
-    app.register_blueprint(trigger.bp)
-    
-    return app
+
 
 if __name__ == "__main__":
     parser = create_parser()
     args = parser.parse_args()
 
     if args.command == "serve":
+        tqdm.disable = True
         app = create_app()
-        app.run(host=args.host, port=args.port)
+        uvicorn.run(app, host=args.host, port=args.port)
     elif args.command == "cli":
         run_cli(args)

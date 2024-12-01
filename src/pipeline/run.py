@@ -1,11 +1,14 @@
+import asyncio
+from functools import partial
 import logging
 from pathlib import Path
 import zipfile
 import requests
 import os
 from tqdm import tqdm
+import concurrent.futures as cf
 
-from src.pipeline.config import ConfigModel
+from src.models import ConfigModel, PipelineStates
 from src.process.airfrans import process_airfrans
 
 
@@ -36,29 +39,48 @@ def download_zip(zip_path: Path):
     res = requests.get(
         "https://data.isir.upmc.fr/extrality/NeurIPS_2022/Dataset.zip", stream=True
     )
+    res.raise_for_status()
 
     unit = pow(2, 20)
     total_mib = int(res.headers.get("content-length", 0)) / unit
-    pbar = tqdm(total=round(total_mib), unit="MiB")
-    chunk_size = 8192
+    pbar = tqdm(total=total_mib, unit="MiB", disable=True)
 
     with open(zip_path, "wb") as fp:
         for chunk in res.iter_content(chunk_size=8192):
             fp.write(chunk)
-            pbar.update(round(chunk_size / unit))
+            pbar.update(len(chunk) / unit)
 
 
-
-def run_pipeline(config: ConfigModel):
+def run_pipeline_sync(config: ConfigModel, task_id: str, states: dict):
+    states[task_id] = PipelineStates.STARTED_JOB
     # sets up working directories to place data
     logging.info("setting up your directories")
+    states[task_id] = PipelineStates.SETTING_UP_DIR
     config.build_paths()
-    logging.info(f"downloading raw dataset to {config.zip_path}")
     # downloads zip file to target path
+    logging.info(f"downloading raw dataset to {config.zip_path}")
+    states[task_id] = PipelineStates.DOWNLOADING_ZIP
     download_zip(config.zip_path)
+     # extracting zip into target folde
     logging.info(f"extracting zip files to {config.unzip_path}:")
-    # extracting zip into target folder
+    states[task_id] = PipelineStates.UNZIPPING_FILES
     extract_zip(config.zip_path, config.unzip_path, cleanup=False)
+    # processing files
     logging.info(f"processing dataset and saving to {config.extracted_data_path}")
+    states[task_id] = PipelineStates.PROCESSING_FILES
     stats = process_airfrans(config.unzip_path / "Dataset", config.extracted_data_path)
-    print(stats)
+    
+    states[task_id] = PipelineStates.JOB_COMPLETE
+
+
+async def run_pipeline(config: ConfigModel, task_id: str, states: dict, thread_pool: cf.ThreadPoolExecutor):
+    """Async wrapper for running the pipeline in a thread pool"""
+    try:
+        # Run the synchronous pipeline in a thread pool
+        loop = asyncio.get_running_loop()
+        await loop.run_in_executor(
+            thread_pool, 
+            partial(run_pipeline_sync, config, task_id, states)
+        )
+    finally:
+        pass

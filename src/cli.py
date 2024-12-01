@@ -1,5 +1,6 @@
-from src.pipeline.config import ConfigModel
+from src.models import ConfigModel
 from src.pipeline.run import run_pipeline
+
 
 def run_cli(args):
     # sets up working directories to place data
