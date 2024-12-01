@@ -2,6 +2,7 @@ import asyncio
 from functools import partial
 import logging
 from pathlib import Path
+from typing import Dict
 import zipfile
 import requests
 import os
@@ -73,7 +74,13 @@ def run_pipeline_sync(config: ConfigModel, task_id: str, states: dict):
     states[task_id] = PipelineStates.JOB_COMPLETE
 
 
-async def run_pipeline(config: ConfigModel, task_id: str, states: dict, thread_pool: cf.ThreadPoolExecutor):
+async def run_pipeline(
+        config: ConfigModel, 
+        task_id: str, 
+        states: Dict[str, PipelineStates],
+        active_tasks: Dict[str, asyncio.Task],
+        thread_pool: cf.ThreadPoolExecutor
+):
     '''async wrapper for running the pipeline in a thread pool'''
     try:
         # run the synchronous pipeline in a thread pool
@@ -83,4 +90,5 @@ async def run_pipeline(config: ConfigModel, task_id: str, states: dict, thread_p
             partial(run_pipeline_sync, config, task_id, states)
         )
     finally:
-        pass
+        if task_id in active_tasks:
+            del active_tasks[task_id]
