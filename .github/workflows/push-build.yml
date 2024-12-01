@@ -1,7 +1,7 @@
 name: "Build and Push Docker Container"
 on:
     push:
-        branches: [main, feature/http-server-infra]
+        branches: [main]
 
 env:
   ACR_REGISTRY: myregistrye36f2c4c.azurecr.io
