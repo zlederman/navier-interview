@@ -18,12 +18,17 @@ acr = containerregistry.Registry(
     admin_user_enabled=True
 )
 
-acr_cred = pulumi.Output.all(resource_group.name, acr.name).apply(
-    lambda args: containerregistry.list_registry_credentials(
-        resource_group_name=args[0],
-        registry_name=args[1]
+def get_registry_creds(args):
+    resource_group_name, registry_name = args
+    creds = containerregistry.list_registry_credentials(
+        resource_group_name=resource_group_name,
+        registry_name=registry_name
     )
-)
+    return creds
+
+acr_cred = pulumi.Output.all(resource_group.name, acr.name).apply(get_registry_creds)
+
+
 
 
 # Create a password for the Service Principal

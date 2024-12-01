@@ -12,7 +12,7 @@ def create_parser():
     subparsers = parser.add_subparsers(dest='command', required=True)
     
     server_parser = subparsers.add_parser('serve', help='Start the server')
-    server_parser.add_argument('--port', type=int, default=8000)
+    server_parser.add_argument('--port', type=int, default=8080)
     server_parser.add_argument('--host', type=str, default='0.0.0.0')
     
 

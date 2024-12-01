@@ -7,11 +7,10 @@ config:
   sa:file-share-name: naca-file-share
 
   acr:name: myregistry
-  acr:github-token: my-gh-token
   acr:push-role-id: /subscriptions/a18ad180-37ce-4ecc-a324-4bf34ba162b2/providers/Microsoft.Authorization/roleDefinitions/8311e382-0749-4cb8-b61a-304f252e45ec
 
   aci:cpu-cores: 1
-  aci:image: nginx:latest
+  aci:image: naca-airfoil-pipeline:341a549924a9f6df8dd049389cbb14bf6777d86f
   aci:memory-gb: 2
   aci:name: navier-interview-app
   aci:volume-mnt-path: /mnt/app

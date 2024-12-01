@@ -8,10 +8,11 @@ from components.registry import acr, acr_cred
 from components.resource_group import resource_group
 
 aci_conf = pulumi.Config("aci")
+
 image_registry = containerinstance.ImageRegistryCredentialArgs(
-            server=acr.login_server,
-            username=acr_cred.username,
-            password=pulumi.Output.secret(acr_cred.passwords[0].value)
+    server=acr.login_server,
+    username=acr_cred.apply(lambda creds: creds.username),
+    password=acr_cred.apply(lambda creds: creds.passwords[0].value)
 )
 
 volume = containerinstance.VolumeArgs(
@@ -25,14 +26,14 @@ volume = containerinstance.VolumeArgs(
 
 container = containerinstance.ContainerArgs(
         name=aci_conf.require("name"),
-        image=aci_conf.require("image"),
+        image=pulumi.Output.concat(acr.login_server, "/", aci_conf.require("image")),
         resources=containerinstance.ResourceRequirementsArgs(
             requests=containerinstance.ResourceRequestsArgs(
                 cpu=int(aci_conf.require("cpu-cores")),
                 memory_in_gb=int(aci_conf.require("memory-gb")),
             )
         ),
-        ports=[containerinstance.ContainerPortArgs(port=80)],
+        ports=[containerinstance.ContainerPortArgs(port=8080)],
         volume_mounts=[containerinstance.VolumeMountArgs(
             name=aci_conf.require("volume-name"),
             mount_path=aci_conf.require("volume-mnt-path"),
@@ -48,7 +49,7 @@ container_instance = containerinstance.ContainerGroup(
     ip_address=containerinstance.IpAddressArgs(
         type=containerinstance.ContainerGroupIpAddressType.PUBLIC,
         ports=[containerinstance.PortArgs(
-            port=80,
+            port=8080,
             protocol=containerinstance.ContainerGroupNetworkProtocol.TCP
         )]
     ),

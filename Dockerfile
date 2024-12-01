@@ -6,6 +6,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY . .
+COPY src/ src/
+COPY run.py .
+
 
 CMD ["python", "run.py", "serve", "--host=0.0.0.0", "--port=8080"]
