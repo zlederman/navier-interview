@@ -6,7 +6,7 @@ on:
 env:
   ACR_REGISTRY: myregistrya85882de.azurecr.io
   IMAGE_NAME: naca-airfoil-pipeline
-  IMAGE_TAG: ${{ github.sha }}
+  IMAGE_TAG: latest
 
 jobs:
     build-and-push:
