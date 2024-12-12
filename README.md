@@ -1,4 +1,4 @@
-# Navier.ai Interview Challenge - airfRANS Dataset
+# airfRANS Dataset
 
 ## Usage
 1. Install Dependencies
