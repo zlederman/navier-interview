@@ -1,0 +1,19 @@
+encryptionsalt: v1:b3uVrt7OALw=:v1:lTXrpruk4I4u0Par:0rhWMeRsAfx5nckJdiOoEstHD5op/A==
+config:
+  azure-native:location: eastus
+
+  rg:name: navier-interview-rg
+  sa:name: nacastorage
+  sa:file-share-name: naca-file-share
+
+  acr:name: myregistry
+  acr:push-role-id: /subscriptions/a18ad180-37ce-4ecc-a324-4bf34ba162b2/providers/Microsoft.Authorization/roleDefinitions/8311e382-0749-4cb8-b61a-304f252e45ec
+
+  aci:cpu-cores: 1
+  aci:image: naca-airfoil-pipeline:latest
+  aci:memory-gb: 2
+  aci:name: navier-interview-app
+  aci:volume-mnt-path: /mnt/app
+  aci:volume-name: navier-interview-mnt
+  aci:group-name: navier-interview-cg
+
